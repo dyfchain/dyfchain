@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="//www.bootcss.com/p/layoutit/css/bootstrap-combined.min.css" rel="stylesheet">
+</head>
+<html>
+<body>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="text-center">
+                测试数据上传通道
+            </h3>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span2">
+            <form class="form-search">
+                <p>
+                    输入目标地址
+                </p>
+                <p>
+                    <input class="input-medium search-query" type="text"/>
+                </p>
+                <p>
+                    <button class="btn" type="submit">查找</button>
+                </p>
+            </form>
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                    列表标题
+                </li>
+                <li>
+                    <a href="/html">主网络</a>
+                </li>
+                <li>
+                    <a href="/html/datalink.html">数据链Demo</a>
+                </li>
+                <li>
+                    <a href="/html/register.html">注册</a>
+                </li>
+                <li class="nav-header">
+                    功能列表
+                </li>
+                <li class="active">
+                    <a href="/html/newdata.html">测试数据上传通道</a>
+                </li>
+                <li>
+                    <a href="#">设置</a>
+                </li>
+                <li class="divider">
+                </li>
+                <li>
+                    <a href="#">帮助</a>
+                </li>
+            </ul>
+        </div>
+        <div class="span10">
+            <div class="alert">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <h4>
+                    提示!
+                </h4> <strong>提示! </strong> 测试数据上传后需要一段时间后即可在数据链Demo中显示
+            </div>
+            <form>
+                <fieldset>
+                    <legend>上传一个JSON或者TEXT数据</legend>
+                    <label>地址标记用户名（6-12位）</label><textarea type="text" v-model="memo" style="width:800px;height: 500px;"></textarea>
+                    <p>
+                        <span class="help-block">textarea里面的数据:{{memo}}</span>
+                    </p>
+                    <button type="button" class="btn" @click="send()">确认并生成</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="//cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+<script>
+    var vm = new Vue({
+        el: '.container-fluid',
+        data: {
+            seen: true,
+            memo: "",
+        },
+        created: function () {
+        },
+        methods: {
+            send() {
+
+                $.ajax({
+                    //请求方式
+                    type: "post",
+                    //请求地址
+                    url: "/v1/cosmos/index/write_demo",
+                    //数据，json字符串
+                    data: {
+                        "memo": vm.memo,
+                    },
+                    success: function (ret) {
+                        if (ret) {
+                            if (ret.code == 0) {
+                                alert("上传完毕，数据已经打包，稍后将在Demo中显示");
+                            } else {
+                                alert(ret.data);
+                            }
+                        } else {
+                            alert("数据没有得到正确的返回");
+                        }
+                    }
+                });
+            },
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name=viewport content="width=1220">
+    <meta name="format-detection" content="telphone=no, email=no"/>
+    <title set-lang="text:invite_register"></title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <template>
+            <header>
+                <div class="header">
+                    <div class="header-left"> 浏览器</div>
+                    <div class="header-middle">
+                        <div class="header-search">
+                            <input type="text" placeholder="区块高度、交易哈希、账户地址" class="search-input">
+                            <div class="search-btn"></div>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="nav">
+                            <a href="index.html">首页</a>
+                            <a href="transaction.html">交易列表</a>
+                            <a href="#" class="active">资产</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <section class="container">
+                <div class="container-box">
+                    <div class="main-box">
+                        <div class="main-box-header bd-bottom">
+                            <div class="title">区块 ：{{detail.id}}</div>
+                            <div class="more">
+                                <a>前一个区块</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a>后一个区块>></a>
+                            </div>
+                        </div>
+                        <div class="assets-detail-cont">
+                            <div class="assets-table">
+                                <div class="assets-item">
+                                    <div>区块Hash</div>
+                                    <div><span>{{detail.block_hash}}</span></div>
+                                </div>
+                                <div class="assets-item">
+                                    <div>交易ID</div>
+                                    <div><span>{{detail.id}}</span></div>
+                                </div>
+                                <div class="assets-item">
+                                    <div>区块高度</div>
+                                    <div><span>{{detail.height}}</span></div>
+                                </div>
+
+                                <div class="assets-item">
+                                    <div>交易Memo</div>
+                                    <div><span>{{detail.memo}}</span></div>
+                                </div>
+                                <div class="assets-item">
+                                    <div>区块生成时间</div>
+                                    <div><span>{{detail.time}}</span></div>
+                                </div>
+                                <div class="assets-item">
+                                    <div>发送地址</div>
+                                    <div><span>{{detail.from_address}}</span></div>
+                                </div>
+                                <div class="assets-item">
+                                    <div>接收地址</div>
+                                    <div><span>{{detail.to_address}}</span></div>
+                                </div>
+                                <div class="assets-item">
+                                    <div>交易数量</div>
+                                    <div><span>{{detail.amount}}</span></div>
+                                </div>
+                                <div class="assets-item">
+                                    <div>交易手续费</div>
+                                    <div><span>{{detail.fee}}</span></div>
+                                </div>
+                                <div class="assets-item">
+                                    <div>交易链</div>
+                                    <div><span>{{detail.chain_id}}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-data">
+                            <div class="row-btn"><a :class="{'active':isShowRow}" @click="showRow">原始数据</a></div>
+                            <div class="row-json" v-show="isShowRow">
+                                <pre>
+                                    <code>
+                                       {{detail}}
+                                    </code>
+                                </pre>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <footer>
+            <div class="footer">
+                Copyright © 2020
+            </div>
+        </footer>
+    </template>
+</div>
+
+<script src="//cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+
+<script>
+    function getQueryVariable(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) {
+                return pair[1];
+            }
+        }
+        return (false);
+    }
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            seen: true,
+            detail: {}
+        },
+        created: function () {
+
+            this.blocks()
+        },
+        methods: {
+            blocks() {
+                $.ajax({
+                    //请求方式
+                    type: "get",
+                    //请求地址
+                    url: "/v1/cosmos/index/detail?height=" + getQueryVariable("height"),
+                    //数据，json字符串
+                    data: {},
+                    success: function (ret) {
+                        console.log(vm.mainnet);
+                        vm.detail = ret;
+                        console.log(vm.mainnet);
+                    }
+                });
+            },
+            dt(addr) {
+                // alert(ddd)
+                location.href = "detail.html?height=" + addr;
+            }
+        }
+    });
+
+
+
+    $(function () {
+        initEvent();
+    });
+
+    function initEvent() {
+        var app = new Vue({
+            el: '#app',
+            data: {
+                isShowRow: false,
+            },
+            methods: {
+                showRow: function () {
+                    this.isShowRow = !this.isShowRow;
+                }
+            }
+        })
+    }
+</script>
+
+</body>
+
+</html>

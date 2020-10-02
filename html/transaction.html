@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name=viewport content="width=1220">
+    <meta name="format-detection" content="telphone=no, email=no" />
+    <title set-lang="text:invite_register"></title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="header">
+            <div class="header-left"> 浏览器</div>
+            <div class="header-middle">
+                <div class="header-search">
+                    <input type="text" placeholder="区块高度、交易哈希、账户地址" class="search-input">
+                    <div class="search-btn"></div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="nav">
+                    <a href="index.html">首页</a>
+                    <a href="#" class="active">交易列表</a>
+                    <a href="assets.html">资产</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="container">
+        <div class="container-box">
+            <div class="main-box">
+                <div class="main-box-header">
+                    <div class="title">交易列表</div>
+                    <div class="more"><a href="#">更多 >></a></div>
+                </div>
+                <div class="jiaoyi">
+                    <div class="jiaoyi-item">
+                        <div>时间</div>
+                        <div>所在区块</div>
+                        <div>交易类型</div>
+                        <div>源用户</div>
+                        <div>目的账户</div>
+                        <div>数量</div>
+                        <div>交易哈希</div>
+                        <div>状态</div>
+                    </div>
+
+                    <div class="jiaoyi-item" v-for="item in mainnet">
+                        <div>{{item.time}}</div>
+                        <div><a @click="dt(item.id)">{{item.height}}</a></div>
+                        <div><span>Gasn</span></div>
+                        <div><a>{{item.from_address}}</a> <label>OUT</label></div>
+                        <div><a>{{item.to_address}}</a></div>
+                        <div>{{item.fee}}</div>
+                        <div><a>{{item.block_hash}}</a></div>
+                        <div>成功</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="footer">
+            Copyright © 2020
+        </div>
+    </footer>
+
+    <script src="//cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+
+    <script>
+        var vm = new Vue({
+            el: '.container',
+            data: {
+                seen: true,
+                mainnet: [],
+                mainnet_6: [],
+                nodes: 1,
+                number: 10,
+                height: 20,
+            },
+            created: function () {
+                this.blocks();
+
+                setInterval(function () {
+                    vm.blocks();
+
+                }, 3000);
+            },
+            methods: {
+                blocks() {
+                    $.ajax({
+                        //请求方式
+                        type: "get",
+                        //请求地址
+                        url: "/v1/cosmos/index/mainnet",
+                        //数据，json字符串
+                        data: {},
+                        success: function (ret) {
+                            console.log(vm.mainnet);
+                            vm.mainnet = ret;
+                            console.log(vm.mainnet);
+                            vm.height = vm.mainnet[0].height;
+                            vm.number = Math.floor(vm.mainnet[1].id / 333);
+                            vm.mainnet_6 = [];
+                            for (let i = 0; i < 6; i++) {
+                                vm.mainnet_6.push(vm.mainnet[i])
+                            }
+
+                        }
+                    });
+                },
+                dt(addr) {
+                    // alert(ddd)
+                    location.href = "block_detail.html?height=" + addr;
+                }
+            }
+        });
+
+    </script>
+</body>
+    
+</html>
